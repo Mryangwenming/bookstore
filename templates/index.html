@@ -67,7 +67,7 @@
             {% for python in python_hot%}
 				<li>
 					<h4><a href="#">{{python.name}}</a></h4>
-					<a href="#"><img src="{{STATIC_URL}}{{python.image}}"></a>
+					<a href="#"><img src="{% static python.image%}"></a>
 					<div class="prize">¥ {{python.price}}</div>
 				</li>
             {% endfor%}
@@ -94,7 +94,7 @@
             {% for java in javascript_hot%}
 				<li>
 					<h4><a href="#">{{java.name}}</a></h4>
-					<a href="#"><img src="{{STATIC_URL}}{{java.image}}"></a>
+					<a href="#"><img src="{% static java.image%}"></a>
 					<div class="prize">¥ {{java.price }}</div>
 				</li>
             {% endfor%}
@@ -123,7 +123,7 @@
             {% for algo in algorithms_hot %}
 				<li>
 					<h4><a href="#">{{algo.name}}</a></h4>
-					<a href="#"><img src="{{STATIC_URL }}{{algo.image }}"></a>
+					<a href="#"><img src="{% static algo.image %}"></a>
 					<div class="prize">¥ {{algo.price}}</div>
 				</li>
             {% endfor%}
@@ -149,7 +149,7 @@
             {% for machin in machinelearning_hot %}
 				<li>
 					<h4><a href="#">{{machin.name}}</a></h4>
-					<a href="#"><img src="{{STATIC_URL}}{{machin.image}}"></a>
+					<a href="#"><img src="{% static machin.image%}"></a>
 					<div class="prize">¥ {{machin.price}}</div>
 				</li>
             {% endfor%}
@@ -162,7 +162,7 @@
 			<h3 class="fl" id="model05">操作系统</h3>
 			<div class="subtitle fl">
 				<span>|</span>
-            {% for book in operatingsystem_new %}
+            {% for book in operationssysterm_new %}
 				<a href="#">{{book.name}}</a>
             {%endfor%}
 			</div>
@@ -172,10 +172,10 @@
 		<div class="book_con clearfix">
 			<div class="book_banner fl"><img src="{% static 'images/banner05.jpg'%}"></div>
 			<ul class="book_list fl">
-            {% for systerm in operatingsystem_hot %}
+            {% for systerm in operationssysterm_hot %}
 				<li>
 					<h4><a href="#">{{systerm.name}}</a></h4>
-					<a href="#"><img src="{{STATIC_URL}}{{systerm.image}}"></a>
+					<a href="#"><img src="{% static systerm.image%}"></a>
 					<div class="prize">¥ {{systerm.price}}</div>
 				</li>
             {%endfor%}
@@ -201,7 +201,7 @@
             {%for data in database_hot %}
 				<li>
 					<h4><a href="#">{{data.name}}</a></h4>
-					<a href="#"><img src="{{STATIC_URL}}{{data.image}}"></a>
+					<a href="#"><img src="{%static data.image%}"></a>
 					<div class="prize">¥ {{data.price}}</div>
 				</li>
             {% endfor%}
