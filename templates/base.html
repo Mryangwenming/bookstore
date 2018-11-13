@@ -21,10 +21,10 @@
 			<div class="welcome fl">欢迎来到尚硅谷书城!</div>
 			<div class="fr">
 
-            {%if request.session.islogin == True %}
+            {%if request.session.islogin %}
 
-				<div class="login_info fl">
-					欢迎您：<em>{{request.user.username}}</em>
+				<div class="login_btn fl">
+					欢迎您：<em>{{request.session.username}}</em>
                 <a href="{%url 'users:user_logout'%}">退出</a> 
 				</div>
             {%else%}
