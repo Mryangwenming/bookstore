@@ -58,7 +58,9 @@ def user_register(request):
             return render(request,'register.html',{'msg':'用户名已存在!'})
         
         return redirect(reverse('users:index'))
- 
+
+
+
 def user_login(request):
     if request.method == 'GET':
         if request.COOKIES.get('username'):
@@ -70,25 +72,28 @@ def user_login(request):
         context = {
             'username':username,
             'checked':checked
-        }
-        return render(request,'login.html',context)
-    else:
+        }   
+        return render(request,'login.html',context) 
+
+    if request.method == 'POST':
         username = request.POST.get('username','')
         password = request.POST.get('password','')
         remember = request.POST.get('remember','')
+    
+        print(username,password,remember)
         if not all([username,password,remember]):
             return JsonResponse({'res':2})
-         
+     
         passport = Passport.objects.get_one_passport(username=username,password=password)
-        
+    
         if passport:
-            next_url = reverse('users:index')
+            next_url = reverse('index')
             jres  = JsonResponse({'res':1,'next_url':next_url})
-            if remember == 'True':
-                jres.set_cookie('username'=username,max_age=7*24*3600)
+            if remember == 'true':
+                jres.set_cookie('username',username,max_age=7*24*3600)
             else:
                 jres.delete_cookie('username')
-            
+        
             request.session['islogin'] = True
             request.session['username'] = username
             request.session['passport_id'] = passport.id
