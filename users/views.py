@@ -20,7 +20,6 @@ def index(request):
     operationssysterm_hot = Books.objects.get_books_by_type(OPERATIONSSYSTERM,limit=4,sort='hot')
     database_new = Books.objects.get_books_by_type(DATABASE,limit=3,sort='new')
     database_hot = Books.objects.get_books_by_type(DATABASE,limit=4,sort='hot')
-
     context = {
         'python_new':python_new,
         'python_hot':python_hot,
@@ -80,7 +79,6 @@ def user_login(request):
         password = request.POST.get('password','')
         remember = request.POST.get('remember','')
     
-        print(username,password,remember)
         if not all([username,password,remember]):
             return JsonResponse({'res':2})
      
@@ -102,5 +100,7 @@ def user_login(request):
             return JsonResponse({'res':0})
 
                 
-
+def user_logout(request):
+    request.session.flush()
+    return redirect(reverse('index'))
 
