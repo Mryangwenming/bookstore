@@ -10,21 +10,21 @@ class BooksManager(models.Manager):
         '''
         
         if sort == 'new':
-            order_by = ('-create_time','')
+            order_by = ('-create_time',)
         elif sort == 'hot':
-            order_by = ('-sales','')
+            order_by = ('-sales',)
         elif sort == 'price':
-            order_by = ('price','')
+            order_by = ('price',)
         else:
-            order_by = ('-pk','') # 按照id进行降序排序
+            order_by = ('-pk',) # 按照id进行降序排序
         
         books_li = self.filter(type_id=type_id).order_by(*order_by)
         
         if limit:
-            books_li = books.li[:limit]
+            books_li = books_li[:limit]
         return books_li
 
-    def get_bookd_by_id(self,books_id):
+    def get_books_by_id(self,books_id):
         '''根据商品的id获取商品信息 '''
         try:
             books = self.get(id=books_id)
