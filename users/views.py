@@ -35,9 +35,6 @@ def index(request):
         'database_hot':database_hot
     
     }
-    
-
-
     return render(request,'index.html',context)
 
 
@@ -59,5 +56,20 @@ def user_register(request):
             print(e)
             return render(request,'register.html',{'msg':'用户名已存在!'})
         
-        return redirect(reverse('users:user_register'))
+        return redirect(reverse('users:index'))
  
+def user_login(request):
+    if request.method == 'GET':
+        if request.COOKIES.get('username'):
+            username = request.COOKIES.get('username')
+            checked = 'checked'
+        else:
+            username = ''
+            checked = ''
+        context = {
+            'username':username,
+            'checked':checked
+        }
+        return render(request,'login.html',context)
+    
+        
