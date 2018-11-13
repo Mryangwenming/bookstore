@@ -3,6 +3,7 @@ from django.shortcuts import render,redirect,reverse
 from .models import Passport
 from books.enums import *
 from books.models import Books
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -71,5 +72,30 @@ def user_login(request):
             'checked':checked
         }
         return render(request,'login.html',context)
-    
+    else:
+        username = request.POST.get('username','')
+        password = request.POST.get('password','')
+        remember = request.POST.get('remember','')
+        if not all([username,password,remember]):
+            return JsonResponse({'res':2})
+         
+        passport = Passport.objects.get_one_passport(username=username,password=password)
         
+        if passport:
+            next_url = reverse('users:index')
+            jres  = JsonResponse({'res':1,'next_url':next_url})
+            if remember == 'True':
+                jres.set_cookie('username'=username,max_age=7*24*3600)
+            else:
+                jres.delete_cookie('username')
+            
+            request.session['islogin'] = True
+            request.session['username'] = username
+            request.session['passport_id'] = passport.id
+            return jres
+        else:
+            return JsonResponse({'res':0})
+
+                
+
+
