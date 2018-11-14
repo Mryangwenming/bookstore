@@ -54,7 +54,7 @@
 			<div class="subtitle fl">
 				<span>|</span>
             {%for book in python_new %}
-				<a href="#">{{ book.name  }}</a>
+				<a href="{%url 'books:book_detail' book.id %}">{{ book.name  }}</a>
             {%endfor %}
 			</div>
 			<a href="#" class="book_more fr">查看更多 ></a>
@@ -66,8 +66,8 @@
     
             {% for python in python_hot%}
 				<li>
-					<h4><a href="#">{{python.name}}</a></h4>
-					<a href="#"><img src="{% static python.image%}"></a>
+					<h4><a href="{%url 'books:book_detail' python.id%}">{{python.name}}</a></h4>
+					<a href="{%url 'books:book_detail' python.id%}"><img src="{% static python.image%}"></a>
 					<div class="prize">¥ {{python.price}}</div>
 				</li>
             {% endfor%}
@@ -81,7 +81,7 @@
 			<div class="subtitle fl">
 				<span>|</span>
             {%for book in javascript_new %}
-				<a href="#">{{book.name }}</a>
+				<a href="{%url 'books:book_detail' book.id%}">{{book.name }}</a>
             {% endfor%}			
 			</div>
 			<a href="#" class="book_more fr">查看更多 ></a>
@@ -93,8 +93,8 @@
 
             {% for java in javascript_hot%}
 				<li>
-					<h4><a href="#">{{java.name}}</a></h4>
-					<a href="#"><img src="{% static java.image%}"></a>
+					<h4><a href="{%url 'books:book_detail' java.id%}">{{java.name}}</a></h4>
+					<a href="{%url 'books:book_detail' java.id%}"><img src="{% static java.image%}"></a>
 					<div class="prize">¥ {{java.price }}</div>
 				</li>
             {% endfor%}
@@ -110,7 +110,7 @@
 				<span>|</span>
 
             {% for book in algorithms_new %}
-				<a href="#">{{book.name}}</a>
+				<a href="{%url 'books:book_detail' book.id%}">{{book.name}}</a>
             {%endfor %}
 			</div>
 			<a href="#" class="book_more fr">查看更多 ></a>
@@ -122,8 +122,8 @@
 
             {% for algo in algorithms_hot %}
 				<li>
-					<h4><a href="#">{{algo.name}}</a></h4>
-					<a href="#"><img src="{% static algo.image %}"></a>
+					<h4><a href="{%url 'books:book_detail' algo.id%}">{{algo.name}}</a></h4>
+					<a href="{%url 'books:book_detail' algo.id%}"><img src="{% static algo.image %}"></a>
 					<div class="prize">¥ {{algo.price}}</div>
 				</li>
             {% endfor%}
@@ -137,7 +137,7 @@
 			<div class="subtitle fl">
 				<span>|</span>
             {% for book in machinelearning_new %}
-				<a href="#">{{book.name}}</a>
+				<a href="{%url 'books:book_detail' book.id%}">{{book.name}}</a>
             {% endfor %}
 			</div>
 			<a href="#" class="book_more fr">查看更多 ></a>
@@ -148,8 +148,8 @@
 			<ul class="book_list fl">
             {% for machin in machinelearning_hot %}
 				<li>
-					<h4><a href="#">{{machin.name}}</a></h4>
-					<a href="#"><img src="{% static machin.image%}"></a>
+					<h4><a href="{%url 'books:book_detail' machin.id%}">{{machin.name}}</a></h4>
+					<a href="{%url 'books:book_detail' machin.id%}"><img src="{% static machin.image%}"></a>
 					<div class="prize">¥ {{machin.price}}</div>
 				</li>
             {% endfor%}
@@ -163,7 +163,7 @@
 			<div class="subtitle fl">
 				<span>|</span>
             {% for book in operationssysterm_new %}
-				<a href="#">{{book.name}}</a>
+				<a href="{%url 'books:book_detail' book.id%}">{{book.name}}</a>
             {%endfor%}
 			</div>
 			<a href="#" class="book_more fr">查看更多 ></a>
@@ -174,8 +174,8 @@
 			<ul class="book_list fl">
             {% for systerm in operationssysterm_hot %}
 				<li>
-					<h4><a href="#">{{systerm.name}}</a></h4>
-					<a href="#"><img src="{% static systerm.image%}"></a>
+					<h4><a href="{%url 'books:book_detail' systerm.id%}">{{systerm.name}}</a></h4>
+					<a href="{%url 'books:book_detail' systerm.id%}"><img src="{% static systerm.image%}"></a>
 					<div class="prize">¥ {{systerm.price}}</div>
 				</li>
             {%endfor%}
@@ -189,7 +189,7 @@
 			<div class="subtitle fl">
 				<span>|</span>
             {%for book in database_new %}
-				<a href="#">{{book.name}}</a>
+				<a href="{%url 'books:book_detail' book.id%}">{{book.name}}</a>
             {%endfor %}
 			</div>
 			<a href="#" class="book_more fr">查看更多 ></a>
@@ -200,8 +200,8 @@
 			<ul class="book_list fl">
             {%for data in database_hot %}
 				<li>
-					<h4><a href="#">{{data.name}}</a></h4>
-					<a href="#"><img src="{%static data.image%}"></a>
+					<h4><a href="{%url 'books:book_detail' data.id%}">{{data.name}}</a></h4>
+					<a href="{%url 'books:book_detail' data.id%}"><img src="{%static data.image%}"></a>
 					<div class="prize">¥ {{data.price}}</div>
 				</li>
             {% endfor%}
