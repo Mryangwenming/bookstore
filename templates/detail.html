@@ -63,7 +63,7 @@
 			<div class="total">总价：<em>100元</em></div>
 			<div class="operate_btn">
 				<a href="javascript:;" class="buy_btn">立即购买</a>
-				<a href="javascript:;" class="add_cart" id="add_cart">加入购物车</a>				
+				<a href="javascript:;" class="add_cart" id="add_cart" books_id='{{books.id}}'>加入购物车</a>				
 			</div>
 		</div>
 	</div>
@@ -100,3 +100,32 @@
 		</div>
 	</div>
 {%endblock%}
+{% block myjs%}
+<script>
+$(function(){
+
+    $('#add_cart').click(function(){
+        var books_id = $(this).attr('books_id');
+        var books_count = $('.num_show').val();
+        $.ajax({
+            type:'POST',
+            url:'{% url 'cart:carts_add'%}',
+            data:{
+                books_id:books_id,
+                books_count:books_count,
+                csrfmiddlewaretoken:'{{csrf_token}}'
+            },
+            success:function(callback){
+                if(callback.res == 5){
+                    var count = $('#show_count').html();
+                    var count = parseInt(count) + parseInt(books_count);
+                    $('#show_count').html(count);
+                } else{
+                    alert(data.errmsg)    
+                }             
+            }
+        })
+    })
+})
+</script>
+{% endblock%}

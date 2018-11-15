@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^users/',include('users.urls',namespace='users')),
     url(r'^books/',include('books.urls',namespace='books')),
+    url(r'^cart/',include('cart.urls',namespace='cart')),
     url(r'^tinymce/', include('tinymce.urls')),
     url(r'^$',index,name='index')
 ]

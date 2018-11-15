@@ -40,7 +40,7 @@
 					<span>|</span>
 					<a href="{% url 'users:user_center_info'%}">用户中心</a>
 					<span>|</span>
-					<a href="cart.html">我的购物车</a>
+					<a href="{%url 'cart:carts_count'%}">我的购物车</a>
 					<span>|</span>
 					<a href="user_center_order.html">我的订单</a>
 				</div>
@@ -48,6 +48,16 @@
 		</div>		
 	</div>
 {% endblock %}
+{% block cart_count%}
+
+<script>
+    $.get('/cart/count/',function(data){
+        $('#show_count').html(data.res)
+    })
+</script>
+
+
+{% endblock%}
 {% block search %}
 	<div class="search_bar clearfix">
 		<a href="index.html" class="logo fl"><img src="{%static 'images/logo.png'%}" style="width: 160px; height: 53px;"></a>
