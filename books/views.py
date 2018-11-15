@@ -2,8 +2,22 @@ from django.shortcuts import render,redirect,reverse
 from .models import Books
 from .enums import *
 from django.core.paginator import Paginator
+from rest_framework import viewsets,mixins
+from .serializers import BooksSerializer
+
+
 
 # Create your views here.
+
+# 前后端分离部分的代码
+class BooksViewSet(viewsets.GenericViewSet,mixins.ListModelMixin,mixins.RetrieveModelMixin):
+    queryset = Books.objects.all()
+    serializer_class = BooksSerializer
+
+
+
+
+
 
 def book_list(request,type_id,page):
     sort = request.GET.get('sort','default')

@@ -16,6 +16,14 @@ Including another URLconf
 from django.conf.urls import url,include
 from django.contrib import admin
 from users.views import index
+from rest_framework.routers import DefaultRouter
+from books.views import BooksViewSet
+
+router = DefaultRouter()
+router.register(r'Books',BooksViewSet)
+
+
+
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -23,5 +31,6 @@ urlpatterns = [
     url(r'^books/',include('books.urls',namespace='books')),
     url(r'^cart/',include('cart.urls',namespace='cart')),
     url(r'^tinymce/', include('tinymce.urls')),
-    url(r'^$',index,name='index')
+    url(r'^$',index,name='index'),
+    url(r'^api/',include(router.urls)),
 ]
