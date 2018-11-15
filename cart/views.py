@@ -68,7 +68,7 @@ def carts_show(request):
     for id,count in res_dict.items():
         books = Books.objects.get_books_by_id(books_id=id)
         books.count = count
-        books_amount = int(count) * books.price
+        books.amount = int(count) * books.price
         books_li.append(books)
         
         total_count += int(count)
