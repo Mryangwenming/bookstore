@@ -90,7 +90,7 @@ def carts_del(request):
     books_id = request.POST.get('books_id')
     if not all([books_id]):
         return JsonResponse({'res':1,'errmsg':'数据不完整'})
-    books = Book.objects.get_books_by_id(books_id=books_id)
+    books = Books.objects.get_books_by_id(books_id=books_id)
     if books is None:
         return JsonResponse({'res':2,'errmsg':'商品不存在'})
 
@@ -109,7 +109,7 @@ def carts_update(request):
     if not all([books_id,books_count]):
         return JsonResponse({'res':1,'errmsg':'数据不完整'})
     
-    books = Book.objects.get_books_by_id(books_id=books_id)
+    books = Books.objects.get_books_by_id(books_id=books_id)
     if books is None:
         return JsonResponse({'res':2,'errmsg':'商品不存在'})
 
