@@ -51,3 +51,80 @@ def carts_count(request):
         res += int(i)
 
     return JsonResponse({'res':res})
+
+
+
+
+@login_required
+def carts_show(request):
+    passport_id = request.session.get('passport_id')
+    conn = get_redis_connection('default')
+    cart_key = 'cart_%d' % passport_id
+    res_dict = conn.hgetall(cart_key)
+    books_li = []
+    total_count = 0
+    total_price = 0
+    
+    for id,count in res_dict.items():
+        books = Books.objects.get_books_by_id(books_id=id)
+        books.count = count
+        books_amount = int(count) * books.price
+        books_li.append(books)
+        
+        total_count += int(count)
+        total_price += int(count) * books.price
+
+    context = {
+        'books_li':books_li,
+        'total_count':total_count,
+        'total_price':total_price
+    }
+
+    return render(request,'cart.html',context)
+
+
+
+
+@login_required
+def carts_del(request):
+    books_id = request.POST.get('books_id')
+    if not all([books_id]):
+        return JsonResponse({'res':1,'errmsg':'数据不完整'})
+    books = Book.objects.get_books_by_id(books_id=books_id)
+    if books is None:
+        return JsonResponse({'res':2,'errmsg':'商品不存在'})
+
+    conn = get_redis_connection('default')
+    cart_key = 'cart_%d' % request.session.get('passport_id')
+    conn.hdel(cart_key,books_id)
+    return JsonResponse({'res':3})
+
+
+
+@login_required
+def carts_update(request):
+    books_id = request.POST.get('books_id')
+    books_count = request.POST.get('books_count')
+    
+    if not all([books_id,books_count]):
+        return JsonResponse({'res':1,'errmsg':'数据不完整'})
+    
+    books = Book.objects.get_books_by_id(books_id=books_id)
+    if books is None:
+        return JsonResponse({'res':2,'errmsg':'商品不存在'})
+
+    try:
+        books_count = int(books_count)
+    except Exception as e:
+        return JsonResponse({'res':3,'errmsg':'商品数目必须为数字'})
+    
+    conn = get_redis_connection('default')
+    cart_key = 'cart_%d' % request.session.get('passport_id')
+
+    if books_count > books.stock:
+        return JsonResponse({'res':4,'errmsg':'商品库存不足'})
+
+    conn.hset(cart_key,books_id,books_count)
+
+    return JsonResponse({'res':5})
+

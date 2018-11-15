@@ -60,7 +60,7 @@
 					<a href="javascript:;" class="minus fr">-</a>	
 				</div> 
 			</div>
-			<div class="total">总价：<em>100元</em></div>
+			<div class="total">总价：<em></em></div>
 			<div class="operate_btn">
 				<a href="javascript:;" class="buy_btn">立即购买</a>
 				<a href="javascript:;" class="add_cart" id="add_cart" books_id='{{books.id}}'>加入购物车</a>				
@@ -125,6 +125,45 @@ $(function(){
                 }             
             }
         })
+    })
+})
+</script>
+<script>
+$(function(){
+    update_total_price()
+    function update_total_price(){
+        books_price = $('.show_pirze').children('em').text();
+        books_count = $('.num_show').val();
+        books_price = parseFloat(books_price)
+        books_count = parseFloat(books_count)
+        total_price = books_price * books_count
+        $('.total').children('em').text(total_price.toFixed(2) + '元')
+    }
+    
+    $('.add').click(function(){
+        books_count = $('.num_show').val()
+        books_count = parseInt(books_count)+1
+        $('.num_show').val(books_count)
+        update_total_price()
+    })
+        
+    $('.minus').click(function(){
+        books_count = $('.num_show').val()
+        books_count = parseInt(books_count)-1
+        if(books_count == 0){
+            books_count = 1
+        }
+        $('.num_show').val(books_count)
+        update_total_price()
+    })
+
+    $('.num_show').blur(function(){
+        books_count = $(this).val()
+        if(isNaN(books_count) || books_count.trim().length == 0 || parseInt(books_count) <= 0){
+            books_count = 1
+        }
+        $('.num_show').val(parseInt(books_count))
+        update_total_price()
     })
 })
 </script>
