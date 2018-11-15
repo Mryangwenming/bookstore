@@ -1,9 +1,10 @@
 import re
 from django.shortcuts import render,redirect,reverse
-from .models import Passport
+from .models import Passport,Address
 from books.enums import *
 from books.models import Books
 from django.http import JsonResponse
+from utils.decorators import login_required
 
 # Create your views here.
 
@@ -104,3 +105,14 @@ def user_logout(request):
     request.session.flush()
     return redirect(reverse('index'))
 
+
+@login_required
+def user_center_info(request):
+    passport_id = request.session.get('passport_id')
+    addr = Address.objects.get_default_address(passport_id=passport_id)
+    books_li = []
+    context = {
+        'addr':addr,
+        'books_li':books_li
+    }
+    return render(request,'user_center_info.html',context)
