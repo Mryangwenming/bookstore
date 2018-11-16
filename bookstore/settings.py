@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'books',
     'cart',
     'tinymce',
+    'order',
     'rest_framework',
     'rest_framework.authtoken',
 ]

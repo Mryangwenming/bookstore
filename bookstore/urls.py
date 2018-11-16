@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^users/',include('users.urls',namespace='users')),
     url(r'^books/',include('books.urls',namespace='books')),
     url(r'^cart/',include('cart.urls',namespace='cart')),
+    url(r'^order/',include('order.urls',namespace='order')),
     url(r'^tinymce/', include('tinymce.urls')),
     url(r'^$',index,name='index'),
     url(r'^api/',include(router.urls)),

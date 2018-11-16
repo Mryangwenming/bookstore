@@ -51,7 +51,7 @@
 {% block cart_count%}
 
 <script>
-    $.get('/cart/count/',function(data){
+    $.get('/cart/carts_count/',function(data){
         $('#show_count').html(data.res)
     })
 </script>
