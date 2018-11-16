@@ -6,6 +6,7 @@ from books.models import Books
 from django.http import JsonResponse
 from utils.decorators import login_required
 
+
 # Create your views here.
 
 def index(request):

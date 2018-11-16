@@ -24,7 +24,6 @@ router.register(r'Books',BooksViewSet)
 
 
 
-
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^users/',include('users.urls',namespace='users')),
