@@ -11,7 +11,7 @@ class OrderInfo(BaseModel):
         (4,'银联支付')
     )
     
-    PAY_METHOD_ENUM = {
+    PAY_METHODS_ENUM = {
         'CASH':1,
         'WEIXIN':2,
         'ALIPAY':3,

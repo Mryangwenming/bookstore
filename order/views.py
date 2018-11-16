@@ -1,11 +1,14 @@
+import time
 from django.shortcuts import render,redirect,reverse
 from utils.decorators import login_required
 from django.db import transaction
 from users.models import Address,Passport
 from books.models import Books
 from django.http import JsonResponse
-from .models import OrderGoods
+from .models import OrderGoods,OrderInfo
 from django_redis import get_redis_connection
+from datetime import datetime
+
 
 @login_required
 def order_place(request):
@@ -62,6 +65,8 @@ def order_commit(request):
     pay_method = request.POST.get('pay_method')
     books_ids = request.POST.get('books_ids')
     
+    print(addr_id,pay_method,books_ids)
+ 
     if not all([addr_id,pay_method,books_ids]):
         return JsonResponse({'res':1,'errmsg':'数据不完整'})
     try:
@@ -92,20 +97,20 @@ def order_commit(request):
         conn = get_redis_connection('default')
         cart_key = 'cart_%d' % passport_id
         
-        for id in books_ids:
-            books = Books.objects.get_books_by_id(books_id=id)
+        for book_id in books_ids:
+            books = Books.objects.get_books_by_id(books_id=book_id)
             if books is None:
                 transaction.savepoint_rollback(sid) 
                 return JsonResponse({'res':4,'errmsg':'商品信息错误'})
 
-            count = conn.hget(cart_key,id)
+            count = conn.hget(cart_key,book_id)
             
             if int(count) > books.stock:
                 transaction.savepoint_rollback(sid)
                 return JsonResponse({'res':5,'errmsg':'商品库存不足'})
             OrderGoods.objects.create(
                             order_id=order_id,
-                            books_id=books_id,
+                            books_id=book_id,
                             count=count,
                             price=books.price)
 
@@ -121,6 +126,7 @@ def order_commit(request):
         order.save()
 
     except Exception as e:
+        print(e)
         transaction.savepoint_rollback(sid)
         return JsonResponse({'res':7,'errmsg':'服务器错误'})
     conn.hdel(cart_key,*books_ids)
