@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
 {% block title %}尚硅谷书城-提交订单{% endblock %}
 {% block cart_count %}{% endblock %}
 {% block search %}
@@ -59,7 +60,7 @@
 			<li class="col06">{{book.count}}</li>
 			<li class="col07">{{book.amount}}元</li>	
 		</ul>
-        {% endblock %}
+        {% endfor %}
 	</div>
 
 	<h3 class="common_title">总金额结算</h3>
@@ -96,4 +97,34 @@
 			});
 		});
 	</script>
+    <script>
+
+        $('#order_btn').click(function(){
+            var addr_id = $('input[name="addr_id"]').val()
+            var pay_method = $('input[name="pay_style"]:checked').val()
+            var books_ids = $(this).attr('books_ids')
+            var csrf = $('input[name="csrfmiddlewaretoken"]').val()
+            var param={
+                'add_id':addr_id,
+                'pay_method':pay_method,
+                'books_ids':books_ids,
+                'csrfmiddlewaretoken':csrf
+            }
+            $.post('{% url 'order:order_commit' %}',param,function(data){
+                if(data.res==6){
+                    $('.popup_con').fadeIn('fast',function(){
+                        setTimeout(function(){
+                            $('.popup_con').fadeOut('fast',function(){
+                                window.location.href = '{% url 'users:user_center_info' %}'
+                            }); 
+                            
+                        },3000)
+                    });
+                } else{
+                        alert(data.errmsg)
+                    }
+            })
+        
+        })
+    </script>
 {% endblock %}

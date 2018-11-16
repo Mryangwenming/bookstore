@@ -1,7 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect,reverse
 from utils.decorators import login_required
 from django.db import transaction
-
+from users.models import Address,Passport
+from books.models import Books
+from django.http import JsonResponse
+from .models import OrderGoods
+from django_redis import get_redis_connection
 
 @login_required
 def order_place(request):
@@ -18,11 +22,11 @@ def order_place(request):
     total_price = 0
 
     conn = get_redis_connection('default')
-    cart_key = 'cart_%id' % passport_id
+    cart_key = 'cart_%d' % passport_id
 
-    for id in books_ids:
-        books = Books.objects.get_books_by_id(books_id=id)
-        count = conn.hget(cart_key,id)
+    for book_id in books_ids:
+        books = Books.objects.get_books_by_id(books_id=book_id)
+        count = conn.hget(cart_key,book_id)
         books.count = count
         amount = int(count) * books.price
         books.amount = amount
@@ -69,4 +73,59 @@ def order_commit(request):
         return JsonResponse({'res':3,'errmsg':'不支持的支付方式'})
         
     passport_id = request.session.get('passport_id')
-    order_id = datetime.now().strftime('%Y%m%d%')
+    order_id = datetime.now().strftime('%Y%m%d%H%M%S') + str(passport_id)
+    transit_price = 10
+    total_count = 0
+    total_price = 0
+    
+    sid = transaction.savepoint()
+    try:
+        order = OrderInfo.objects.create(
+                    order_id = order_id,
+                    passport_id = passport_id,
+                    addr_id = addr_id,
+                    total_count = total_count,
+                    total_price = total_price,
+                    transit_price = transit_price,
+                    pay_method = pay_method)
+        books_ids = books_ids.split(',')
+        conn = get_redis_connection('default')
+        cart_key = 'cart_%d' % passport_id
+        
+        for id in books_ids:
+            books = Books.objects.get_books_by_id(books_id=id)
+            if books is None:
+                transaction.savepoint_rollback(sid) 
+                return JsonResponse({'res':4,'errmsg':'商品信息错误'})
+
+            count = conn.hget(cart_key,id)
+            
+            if int(count) > books.stock:
+                transaction.savepoint_rollback(sid)
+                return JsonResponse({'res':5,'errmsg':'商品库存不足'})
+            OrderGoods.objects.create(
+                            order_id=order_id,
+                            books_id=books_id,
+                            count=count,
+                            price=books.price)
+
+            books.sales += int(count)
+            books.stock -= int(count)
+            books.save()
+
+            total_count += int(count)
+            total_price += int(count) * books.price
+
+        order.total_count = total_count
+        order.total_price = total_price
+        order.save()
+
+    except Exception as e:
+        transaction.savepoint_rollback(sid)
+        return JsonResponse({'res':7,'errmsg':'服务器错误'})
+    conn.hdel(cart_key,*books_ids)
+    transaction.savepoint_commit(sid)
+    return JsonResponse({'res':6})
+
+        
+            

@@ -114,6 +114,7 @@ def user_center_info(request):
     books_li = []
     context = {
         'addr':addr,
+        'page':'user',  # 这里面是用来判断css跟随的
         'books_li':books_li
     }
     return render(request,'user_center_info.html',context)
