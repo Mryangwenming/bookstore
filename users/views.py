@@ -7,9 +7,16 @@ from django.http import JsonResponse
 from utils.decorators import login_required
 from order.models import OrderInfo,OrderGoods
 from django.core.paginator import Paginator
+from django.views.decorators.cache import cache_page
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from itsdangerous import SignatureExpired
+from bookstore import settings
+from django.core.mail import send_mail
 
 # Create your views here.
 
+
+@cache_page(60)
 def index(request):
     python_new = Books.objects.get_books_by_type(PYTHON,limit=3,sort='new')
     python_hot = Books.objects.get_books_by_type(PYTHON,limit=4,sort='hot')
@@ -50,16 +57,23 @@ def user_register(request):
         email = request.POST.get('email')
         
         if not all([username,password,email]):
-            return render(request,'register.html',{'msg':'参数不能为空!'})
+            return render(request,'register.html',{'errmsg':'参数不能为空!'})
         if not re.match(r'^[a-z0-9][\w\-]*@[a-z0-9\-]+(\.[a-z]{2,5}){1,2}$',email):
-            return render(request,'register.html',{'msg':'邮箱不合法!'})
-        try:
-            Passport.objects.add_one_passport(username=username,password=password,email=email)
-        except Exception as e:
-            print(e)
-            return render(request,'register.html',{'msg':'用户名已存在!'})
+            return render(request,'register.html',{'errmsg':'邮箱不合法!'})
+
         
-        return redirect(reverse('users:index'))
+        p = Passport.objects.check_passport(username=username)
+        if p:
+            return render(request,'register.html',{'errmsg':'用户名已存在!'})
+        passport_per = Passport.objects.add_one_passport(username=username,password=password,email=email)
+
+        serializer = Serializer(settings.SECRET_KEY,3600)
+        token = serializer.dumps({'confirm':passport_per.id})
+        token = token.decode()
+
+        send_mail('我的书城用户激活','',settings.EMAIL_FROM,[email], html_message='<a href="http://127.0.0.1:8000/users/user_active/%s/">http://127.0.0.1:8000/users/user_active/</a>' % token)
+        
+        return redirect(reverse('index'))
 
 
 

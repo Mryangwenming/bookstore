@@ -158,3 +158,12 @@ SESSION_CACHE_ALIAS = "default"
 
 
 ALIPAY_URL='https://openapi.alipaydev.com/gateway.do'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.163.com'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'ywm0317@163.com'
+EMAIL_HOST_PASSWORD = 'yangwenming0317'
+EMAIL_FROM = 'ywm0317@163.com'
+

@@ -13,6 +13,15 @@ class PassportManager(models.Manager):
         except self.model.DoesNotExist:
             passport = None
         return passport
+
+    def check_passport(self,username):
+        try:
+            passport_person = self.get(username=username)
+        except self.model.DoesNotExist:
+            passport_person = None
+        if passport_person:
+            return True
+        return False
         
 
 class Passport(BaseModel):

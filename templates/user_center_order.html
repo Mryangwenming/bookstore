@@ -56,7 +56,7 @@
 								</ul>
                             {% endfor %}
 							</td>
-							<td width="15%">{{order.total_price}}元</td>
+							<td width="15%">{{order.total_price|add:order.transit_price}}元</td>
 							<td width="15%">
                             {% if order.status == 1 %}
                                 待支付    
