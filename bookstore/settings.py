@@ -157,4 +157,4 @@ SESSION_CACHE_ALIAS = "default"
 
 
 
-
+ALIPAY_URL='https://openapi.alipaydev.com/gateway.do'

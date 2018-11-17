@@ -5,7 +5,8 @@ from books.enums import *
 from books.models import Books
 from django.http import JsonResponse
 from utils.decorators import login_required
-
+from order.models import OrderInfo,OrderGoods
+from django.core.paginator import Paginator
 
 # Create your views here.
 
@@ -118,3 +119,70 @@ def user_center_info(request):
         'books_li':books_li
     }
     return render(request,'user_center_info.html',context)
+
+
+
+@login_required
+def user_address(request):
+    passport_id = request.session.get('passport_id')
+    
+    if request.method == 'GET':
+        addr = Address.objects.get_default_address(passport_id=passport_id)
+        return render(request,'user_center_site.html',{'addr':addr,'page':'address'})
+    else:
+        recipient_name = request.POST.get('username')
+        recipient_addr = request.POST.get('address')
+        zip_code = request.POST.get('code')
+        recipient_phone = request.POST.get('phone')
+
+        if not all([recipient_name,recipient_addr,zip_code,recipient_phone]):
+            return render(request,'user_center_site.html',{'errmsg':'参数不能为空'})
+        Address.objects.add_one_address(
+                    passport_id=passport_id,
+                    recipient_name=recipient_name,
+                    recipient_addr=recipient_addr,
+                    zip_code=zip_code,
+                    recipient_phone=recipient_phone)
+
+        return redirect(reverse('users:user_address'))
+
+
+
+@login_required
+def user_order(request,page):
+    passport_id = request.session.get('passport_id')
+    order_li = OrderInfo.objects.filter(passport_id=passport_id)
+    for order in order_li:
+        order_id = order.order_id
+        order_books_li = OrderGoods.objects.filter(order_id=order_id)
+        for order_books in order_books_li:
+            count = order_books.count
+            price = order_books.price
+            amount = count * price
+            order_books.amount = amount
+        
+        order.order_books_li = order_books_li
+    
+    pa = Paginator(order_li,3)
+    num_pages = pa.num_pages
+    if not page:
+        page = 1
+    if page == '' or int(page) > num_pages:
+        page = 1
+    else:
+        page = int(page)
+    order_li = pa.page(page)
+    if num_pages < 5:
+        pages = range(1,num_pages + 1)
+    elif page <= 3:
+        pages = range(1,6)
+    elif num_pages - page <=2:
+        pages = range(num_pages-4,num_pages+1)
+    else:
+        pages = range(page -2 ,page + 3)
+    context = {
+        'order_li':order_li,
+        'pages':pages,
+    }
+
+    return render(request,'user_center_order.html',context)
