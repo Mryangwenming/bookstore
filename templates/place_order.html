@@ -5,7 +5,7 @@
 {% block search %}
 
 	<div class="search_bar clearfix">
-		<a href="index.html" class="logo fl"><img src="{% static 'images/logo.png'%}" style="width: 160px; height: 53px;"></a>
+		<a href="/" class="logo fl"><img src="{% static 'images/logo.png'%}" style="width: 160px; height: 53px;"></a>
 		<div class="sub_page_name fl">|&nbsp;&nbsp;&nbsp;&nbsp;提交订单</div>
 		<div class="search_con fr">
 			<input type="text" class="input_text fl" name="" placeholder="搜索商品">
@@ -104,7 +104,7 @@ $(function(){
                     $('.popup_con').fadeIn('fast',function(){
                         setTimeout(function(){
                             $('.popup_con').fadeOut('fast',function(){
-                                window.location.href = '{% url 'users:user_center_order' %}'
+                                window.location.href = '{% url 'users:user_order' page=1 %}'
                             }); 
                             
                         },3000)

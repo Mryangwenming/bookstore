@@ -24,6 +24,7 @@
 		</div>
 		<div class="right_content clearfix">
 				<h3 class="common_title2">全部订单</h3>
+                {% csrf_token %}
                 {% for order in order_li %}
 				<ul class="order_list_th w978 clearfix">
 					<li class="col01">{{ order.create_time}}</li>
@@ -69,7 +70,15 @@
                                 已完成
                             {% endif %}
                             </td>
-							<td width="15%"><a href="#" pay_method='{{order.pay_method}}' order_id='{{order.order_id}}' order_status='{{order.status}}'  class="oper_btn">去付款</a></td>
+							<td width="15%">
+                                <a href="#" pay_method='{{order.pay_method}}' order_id='{{order.order_id}}' order_status='{{order.status}}'  class="oper_btn">
+                                {% if order.status == 1 %}
+                                    去付款
+                                {% else %}
+                                    查看物流
+                                {% endif %}
+                                </a>
+                            </td>
 						</tr>
 					</tbody>
 				</table>
@@ -95,3 +104,39 @@
 
 {% endblock %}
 
+{% block myjs %}
+<script>
+$(function(){
+    $('.oper_btn').click(function(){
+        var  order_id = $(this).attr('order_id')
+        var  order_status = $(this).attr('order_status')
+        var  csrf = $('input[name="csrfmiddlewaretoken"]').val()
+        var  params = {
+                'order_id':order_id,
+                'csrfmiddlewaretoken':csrf
+              }
+        if( order_status == 1){
+            $.post("{% url 'order:order_pay' %}",params,function(data){
+                if(data.res == 3){
+                    window.open(data.pay_url)
+                    $.post("{% url 'order:check_pay' %}",params,function(){
+                        if(data.res == 3){
+                            alert('支付成功')
+                            location.reload()
+                        } else{
+                            aler(data.errmsg)
+                        }
+                    })
+                }
+            })
+        } else {
+            alert(data.errmsg)
+        }
+
+    })
+
+
+})
+
+</script>
+{% endblock %}

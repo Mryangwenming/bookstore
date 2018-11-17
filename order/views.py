@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from .models import OrderGoods,OrderInfo
 from django_redis import get_redis_connection
 from datetime import datetime
-from alipay import Alipay
+from alipay import AliPay
 from django.conf import settings
 
 @login_required
@@ -195,16 +195,16 @@ def check_pay(request):
     alipay_public_key_path = os.path.join(settings.BASE_DIR,'order/app_public_key.txt')
     
     app_private_key_string = open(app_private_key_path).read()
-    alipay_public_key_string = open(app_public_key_path).read()
+    alipay_public_key_string = open(alipay_public_key_path).read()
 
-     alipay = AliPay(
-         appid="2016092000554906", # 应用id
-         app_notify_url=None,  # 默认回调url
-         app_private_key_string=app_private_key_string,
-         alipay_public_key_string=alipay_public_key_string,  # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥,
-         sign_type = "RSA2",  # RSA 或者 RSA2
-         debug = True,  # 默认False
-     )
+    alipay = AliPay(
+        appid="2016092000554906", # 应用id
+        app_notify_url=None,  # 默认回调url
+        app_private_key_string=app_private_key_string,
+        alipay_public_key_string=alipay_public_key_string,  # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥,
+        sign_type = "RSA2",  # RSA 或者 RSA2
+        debug = True,  # 默认False
+    )
     
     while True:
         result = alipay.api_alipay_trade_query(order_id)
@@ -214,7 +214,7 @@ def check_pay(request):
             order.trade_id = result.get('trade_no')
             order.save()
             return JsonResponse({'res':3,'message':'支付成功'})
-        elif code == '40004' or (code == '10000' and result.get('trade_status') == 'WAIT_BUYER_PAY')
+        elif code == '40004' or (code == '10000' and result.get('trade_status') == 'WAIT_BUYER_PAY'):
             time.sleep(5)
             continue
         else:
