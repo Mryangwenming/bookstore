@@ -9,8 +9,11 @@ from .models import OrderGoods,OrderInfo
 from django_redis import get_redis_connection
 from datetime import datetime
 from alipay import Alipay
+<<<<<<< HEAD
 from django.conf import settings
 
+=======
+>>>>>>> 96a81dccdbb8cf434af7861f267ecebd8c0a7705
 
 
 @login_required
@@ -150,8 +153,13 @@ def order_pay(request):
         return JsonResponse({'res':2,'errmsg':'订单信息出错'})
     
 
+<<<<<<< HEAD
     app_private_key_path = os.path.join(settings.BASE_DIR,'order/app_private_key.txt')
     alipay_public_key_path = os.path.join(settings.BASE_DIR,'order/app_public_key.txt')
+=======
+    app_private_key_path = os.path.join(settings.BASE_DIR,'order/app_private_key')
+    alipay_public_key_path = os.path.join(settings.BASE_DIR,'order/app_public_key')
+>>>>>>> 96a81dccdbb8cf434af7861f267ecebd8c0a7705
 
     app_private_key_string = open(app_private_key_path).read()
     alipay_public_key_string = open(alipay_public_key_path).read()
@@ -181,6 +189,7 @@ def order_pay(request):
 
 
 
+<<<<<<< HEAD
 @login_required
 def check_pay(request):
     passport_id = request.session.get('passport_id')
@@ -225,6 +234,8 @@ def check_pay(request):
 
 
         
+=======
+>>>>>>> 96a81dccdbb8cf434af7861f267ecebd8c0a7705
 
 
 
