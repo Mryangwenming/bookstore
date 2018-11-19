@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'order',
     'rest_framework',
     'rest_framework.authtoken',
+    'haystack',
 ]
 
 MIDDLEWARE = [
@@ -167,3 +168,16 @@ EMAIL_HOST_USER = 'ywm0317@163.com'
 EMAIL_HOST_PASSWORD = 'yangwenming0317'
 EMAIL_FROM = 'ywm0317@163.com'
 
+
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_cn_backend.WhooshEngine',
+        # 'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
+    }
+}
+
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+
+HAYSTACK_SEARCH_RESULTS_PER_PAGE = 6
