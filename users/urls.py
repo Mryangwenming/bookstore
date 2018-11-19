@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url
-from .views import user_register,user_login,user_logout,user_center_info,user_address,user_order,verifycode
+from .views import user_register,user_login,user_logout,user_center_info,user_address,user_order,verifycode,user_active
 
 urlpatterns = [
     url(r'user_register/$',user_register,name='user_register'),
@@ -24,4 +24,5 @@ urlpatterns = [
     url(r'user_address/$',user_address,name='user_address'),
     url(r'user_order/(?P<page>\d+)/$',user_order,name='user_order'),
     url(r'verifycode/$', verifycode, name='verifycode'),
+    url(r'user_active/$',user_active,name='user_active')
 ]

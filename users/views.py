@@ -241,3 +241,21 @@ def verifycode(request):
     buf = io.BytesIO()
     im.save(buf, 'png')
     return HttpResponse(buf.getvalue(), 'image/png')
+
+
+
+
+def user_active(request,token):
+    serializer = Serializer(settings.SECRET_KEY,3600)
+    try:
+        info = serializer.loads(token)
+        passport_id = info['confirm']
+        passport = Passport.objects.get(id=passport_id)
+        passport.is_active = True
+        passport.save()
+        return redirect(reverse('users:user_login'))
+
+    except SignatureExpired:
+        return HttpResponse('激活链接已过期')
+
+    

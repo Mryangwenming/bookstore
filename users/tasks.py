@@ -9,6 +9,6 @@ def send_active_email(token,username,email):
     message = ''
     sender = settings.EMAIL_FROM
     receiver = [email]
-    html_message = '<a href="http://127.0.0.1:8000/users/user_active/%s/">http://127.0.0.1:8000/users/user_active/</a>' % token
+    html_message = '<a href="http://192.168.13.34:8000/users/user_active/%s/">http://192.168.13.34:8000/users/user_active/</a>' % token
     send_mail(subject,message,sender,receiver,html_message=html_message)
 
