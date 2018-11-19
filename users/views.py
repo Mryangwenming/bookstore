@@ -12,6 +12,7 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import SignatureExpired
 from bookstore import settings
 from django.core.mail import send_mail
+from users.tasks import send_active_email
 
 # Create your views here.
 
@@ -71,8 +72,9 @@ def user_register(request):
         token = serializer.dumps({'confirm':passport_per.id})
         token = token.decode()
 
-        send_mail('我的书城用户激活','',settings.EMAIL_FROM,[email], html_message='<a href="http://127.0.0.1:8000/users/user_active/%s/">http://127.0.0.1:8000/users/user_active/</a>' % token)
-        
+        # send_mail('我的书城用户激活','',settings.EMAIL_FROM,[email], html_message='<a href="http://127.0.0.1:8000/users/user_active/%s/">http://127.0.0.1:8000/users/user_active/</a>' % token)
+        send_active_email.delay(token,username,email)        
+
         return redirect(reverse('index'))
 
 
@@ -95,9 +97,13 @@ def user_login(request):
         username = request.POST.get('username','')
         password = request.POST.get('password','')
         remember = request.POST.get('remember','')
-    
+        verifycode = request.POST.get('verifycode') 
         if not all([username,password,remember]):
             return JsonResponse({'res':2})
+
+
+        if verifycode.upper() != request.session['verifycode']:
+            return JsonResponse({'res': 2})
      
         passport = Passport.objects.get_one_passport(username=username,password=password)
     
@@ -200,3 +206,38 @@ def user_order(request,page):
     }
 
     return render(request,'user_center_order.html',context)
+
+
+
+from django.http import HttpResponse
+from django.conf import settings
+import os
+def verifycode(request):
+    from PIL import Image, ImageDraw, ImageFont
+    import random
+    bgcolor = (random.randrange(20, 100), random.randrange(
+        20, 100), 255)
+    width = 100
+    height = 25
+    im = Image.new('RGB', (width, height), bgcolor)
+    draw = ImageDraw.Draw(im)
+    for i in range(0, 100):
+        xy = (random.randrange(0, width), random.randrange(0, height))
+        fill = (random.randrange(0, 255), 255, random.randrange(0, 255))
+        draw.point(xy, fill=fill)
+    str1 = 'ABCD123EFGHIJK456LMNOPQRS789TUVWXYZ0'
+    rand_str = ''
+    for i in range(0, 4):
+        rand_str += str1[random.randrange(0, len(str1))]
+    font = ImageFont.truetype(os.path.join(settings.BASE_DIR, "Ubuntu-RI.ttf"), 15)
+    fontcolor = (255, random.randrange(0, 255), random.randrange(0, 255))
+    draw.text((5, 2), rand_str[0], font=font, fill=fontcolor)
+    draw.text((25, 2), rand_str[1], font=font, fill=fontcolor)
+    draw.text((50, 2), rand_str[2], font=font, fill=fontcolor)
+    draw.text((75, 2), rand_str[3], font=font, fill=fontcolor)
+    del draw
+    request.session['verifycode'] = rand_str
+    import io
+    buf = io.BytesIO()
+    im.save(buf, 'png')
+    return HttpResponse(buf.getvalue(), 'image/png')

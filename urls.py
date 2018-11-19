@@ -13,15 +13,24 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
-from .views import user_register,user_login,user_logout,user_center_info,user_address,user_order,verifycode
+from django.conf.urls import url,include
+from django.contrib import admin
+from users.views import index
+from rest_framework.routers import DefaultRouter
+from books.views import BooksViewSet
+
+router = DefaultRouter()
+router.register(r'Books',BooksViewSet)
+
+
 
 urlpatterns = [
-    url(r'user_register/$',user_register,name='user_register'),
-    url(r'user_login/$',user_login,name='user_login'),
-    url(r'user_logout/$',user_logout,name='user_logout'),
-    url(r'user_center_info/$',user_center_info,name='user_center_info'),    
-    url(r'user_address/$',user_address,name='user_address'),
-    url(r'user_order/(?P<page>\d+)/$',user_order,name='user_order'),
-    url(r'verifycode/$', verifycode, name='verifycode'),
+    url(r'^admin/', admin.site.urls),
+    url(r'^users/',include('users.urls',namespace='users')),
+    url(r'^books/',include('books.urls',namespace='books')),
+    url(r'^cart/',include('cart.urls',namespace='cart')),
+    url(r'^order/',include('order.urls',namespace='order')),
+    url(r'^tinymce/', include('tinymce.urls')),
+    url(r'^$',index,name='index'),
+    url(r'^api/',include(router.urls)),
 ]
