@@ -1,9 +1,7 @@
-{% extend 'base.html' %}
+{% extends 'base.html' %}
 {% load staticfiles %}
 {% block title %}尚硅谷书城-书籍搜索结果列表{% endblock %}
-{% block header %}{% endblock %}
 {% block cart_count %}{% endblock %}
-{% block search %}{% endblock %}
 {% block content %}
 <div class="breadcrumb">
         <a href="#">{{ query }}</a>
@@ -11,18 +9,18 @@
         <a href="#">搜索结果如下:</a>
     </div>
 
-    <div class="main_wrap clearfix">
+<div class="main_wrap clearfix">
             <ul class="book_type_list clearfix">
                 {% for item in page %}
                     <li>
-                        <a href="{% url 'books:detail' books_id=item.object.id %}"><img src="{% static item.object.image %}"></a>
-                        <h4><a href="{% url 'books:detail' books_id=item.object.id %}">{{ item.object.name }}</a></h4>
+                        <a href="{% url 'books:detail'  item.object.id %}"><img src="{% static item.object.image %}"></a>
+                        <h4><a href="{% url 'books:detail' item.object.id %}">{{ item.object.name }}</a></h4>
                         <div class="operate">
                             <span class="price">￥{{ item.object.price }}</span>
                             <span class="unit">{{ item.object.unit }}</span>
                             <a href="#" class="add_books" title="加入购物车"></a>
                         </div>
-                      </li>
+                    </li>
                 {% endfor %}
             </ul>
             <div class="pagenation">

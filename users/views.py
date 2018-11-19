@@ -13,6 +13,7 @@ from itsdangerous import SignatureExpired
 from bookstore import settings
 from django.core.mail import send_mail
 from users.tasks import send_active_email
+from django_redis import get_redis_connection
 
 # Create your views here.
 
@@ -72,7 +73,6 @@ def user_register(request):
         token = serializer.dumps({'confirm':passport_per.id})
         token = token.decode()
 
-        # send_mail('我的书城用户激活','',settings.EMAIL_FROM,[email], html_message='<a href="http://127.0.0.1:8000/users/user_active/%s/">http://127.0.0.1:8000/users/user_active/</a>' % token)
         send_active_email.delay(token,username,email)        
 
         return redirect(reverse('index'))
@@ -132,7 +132,15 @@ def user_logout(request):
 def user_center_info(request):
     passport_id = request.session.get('passport_id')
     addr = Address.objects.get_default_address(passport_id=passport_id)
+    
+    conn = get_redis_connection('default')
+    key = 'history_%d' % passport_id
+    history_li = conn.lrange(key,0,4)
     books_li = []
+    for id in history_li:
+        books = Books.objects.get_books_by_id(books_id=id)
+        books_li.append(books)
+
     context = {
         'addr':addr,
         'page':'user',  # 这里面是用来判断css跟随的

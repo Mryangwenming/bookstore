@@ -4,6 +4,7 @@ from .enums import *
 from django.core.paginator import Paginator
 from rest_framework import viewsets,mixins
 from .serializers import BooksSerializer
+from django_redis import get_redis_connection
 
 
 
@@ -62,6 +63,15 @@ def book_detail(request,book_id):
     if books is None:
         return redirect(reverse('index'))
     books_li = Books.objects.get_books_by_type(type_id=books.type_id,limit=2,sort='new')
+
+    if request.session.has_key('islogin'):
+        conn = get_redis_connection('default')
+        key = 'history_%d' % request.session.get('passport_id')
+        conn.lrem(key,0,books.id)
+        conn.lpush(key,books.id)
+        conn.ltrim(key,0,4)
+    
+
     type_title = BOOKS_TYPE[books.type_id]
 
     context = {'books':books,'books_li':books_li,'type_title':type_title}
