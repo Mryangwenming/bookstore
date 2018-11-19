@@ -33,5 +33,5 @@ urlpatterns = [
     url(r'^tinymce/', include('tinymce.urls')),
     url(r'^$',index,name='index'),
     url(r'^api/',include(router.urls)),
-    url(r'^search/',include('haystack.urls'))
+    url(r'^search/', include('haystack.urls')),
 ]

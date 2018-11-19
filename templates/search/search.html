@@ -13,8 +13,8 @@
             <ul class="book_type_list clearfix">
                 {% for item in page %}
                     <li>
-                        <a href="{% url 'books:detail'  item.object.id %}"><img src="{% static item.object.image %}"></a>
-                        <h4><a href="{% url 'books:detail' item.object.id %}">{{ item.object.name }}</a></h4>
+                        <a href="{% url 'books:book_detail'  item.object.id %}"><img src="{% static item.object.image %}"></a>
+                        <h4><a href="{% url 'books:book_detail' item.object.id %}">{{ item.object.name }}</a></h4>
                         <div class="operate">
                             <span class="price">￥{{ item.object.price }}</span>
                             <span class="unit">{{ item.object.unit }}</span>

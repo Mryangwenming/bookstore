@@ -63,6 +63,7 @@
 		<a href="index.html" class="logo fl"><img src="{%static 'images/logo.png'%}" style="width: 160px; height: 53px;"></a>
 		<div class="search_con fl">
         <form method='get' action="/search/" target="_blank">
+            {% csrf_token %}
             <input type="text" name="q" class="input_text fl" placeholder='搜索商品'>
             <input type="submit" value="查询" class="input_btn fr">
         </form>
